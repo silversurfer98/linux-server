@@ -1,0 +1,50 @@
+# add repo
+sudo add-apt-repository ppa:qbittorrent-team/qbittorrent-stable
+
+# install
+sudo apt install qbittorrent-nox
+
+# Add group
+sudo adduser --system --group qbittorrent-nox
+
+# add our user to group
+sudo adduser your-username qbittorrent-nox
+
+
+# create systemd file
+sudo nano /etc/systemd/system/qbittorrent-nox.service
+
+
+[Unit]
+Description=qBittorrent Command Line Client
+After=network.target
+
+[Service]
+#Do not change to "simple"
+Type=forking
+User=qbittorrent-nox
+Group=qbittorrent-nox
+UMask=007
+ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=8080
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+# systemctl 
+sudo systemctl start qbittorrent-nox
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable qbittorrent-nox
+
+systemctl status qbittorrent-nox
+
+
+# client resides in 192.168.1.100:8080
+# User : admin 
+# password : adminadmin
+
+
+# custom theme
+https://github.com/iFelix18/Dark-qBittorrent-WebUI

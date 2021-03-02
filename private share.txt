@@ -1,0 +1,67 @@
+STEP 1: INSTALL SAMBA
+
+sudo apt-get update
+sudo apt-get install samba
+
+STEP 2: CREATE THE  PRIVATE FOLDER
+
+sudo mkdir /home/Private
+
+Then set the share permission so that only members of a select group will have access to it…
+
+Step 3: Create a private group
+
+sudo groupadd security
+
+sudo chgrp security /home/Private
+sudo chmod -R 0770 /home/Private
+
+STEP 4: CONFIGURE SAMBA
+
+sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
+
+sudo nano /etc/samba/smb.conf
+
+Then add the content below into the file and save. Our share will be called Private as defined in the settings below  [Private]
+
+[global]
+workgroup = WORKGROUP
+server string = Samba Server %v
+netbios name = ubuntu
+security = user
+map to guest = bad user
+name resolve order = bcast host
+dns proxy = no
+bind interfaces only = yes
+
+# add to the end
+[Private]
+   path = /home/Private
+   writable = yes
+   guest ok = no
+   read only = no
+   browsable = yes
+   create mode = 0777
+   directory mode = 0777
+   valid users = @security
+Save the file and exit
+
+Step 5a: create a system user
+
+system user dont have home directory and non login
+
+sudo useradd -r richard
+
+Step 5: Add members to group
+
+sudo usermod -aG security richard
+
+Then run the commands below for each member of the group to create a Samba password. This is required.
+
+sudo smbpasswd -a richard
+
+When prompted, create and confirm a new password for richard account.
+
+STEP 6: RESTART SAMBA
+
+sudo systemctl restart smbd

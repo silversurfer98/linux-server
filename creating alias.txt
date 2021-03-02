@@ -1,0 +1,13 @@
+
+should be paced in file :
+
+cd /home
+sudo nano .bashrc
+
+
+alias update='sudo apt-get update'    
+
+alias upgrade='sudo apt-get upgrade' 
+
+
+

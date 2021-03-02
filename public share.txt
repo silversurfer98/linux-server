@@ -1,0 +1,46 @@
+Step 1: Install Samba
+
+sudo apt-get update
+sudo apt-get install samba
+
+Step 2: Create the Share
+
+sudo mkdir /home/Public
+sudo chmod 0777 /home/Public
+sudo chown -R nobody:nogroup /home/Public
+
+
+Step 3: Configure Samba
+
+sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
+sudo nano /etc/samba/smb.conf
+
+Then add the content below into the file and save. Our share will be called Public as defined in the setting below  [Public]
+
+[global]
+workgroup = WORKGROUP
+server string = Samba Server %v
+netbios name = ubuntu
+security = user
+map to guest = bad user
+name resolve order = bcast host
+dns proxy = no
+bind interfaces only = yes
+
+# add to the end
+[Public]
+   path = /home/Public
+   writable = yes
+   guest ok = yes
+   guest only = yes
+   read only = no
+   create mode = 0777
+   directory mode = 0777
+   force user = nobody
+Save the file and exit
+
+
+
+Step 4: Restart Samba
+
+sudo systemctl restart smbd
